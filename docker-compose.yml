@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: task_manager_development
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: .
+    command: >
+      bash -c "rm -f tmp/pids/server.pid &&
+               rm -rf tmp/cache/bootsnap* &&
+               bundle exec rails db:create db:migrate &&
+               bundle exec rails s -p 3000 -b 0.0.0.0"
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://postgres:password@db:5432/task_manager_development
+      RAILS_ENV: development
+      RAILS_MASTER_KEY: 168be3a4f08eef16b5dd937601c04cda
+      SECRET_KEY_BASE: e14f975e69339814bc00aac23174726eff7f57998af0cca81c06549bf66be9fece27db6130e05968d54d640f1767dfc4f714eb8fe295c91ba4606cbda6ea6a6e
+      BUNDLE_PATH: /usr/local/bundle
+
+volumes:
+  postgres_data:
+
+
