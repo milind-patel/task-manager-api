@@ -14,7 +14,7 @@ RSpec.describe Types::QueryType do
 
     let(:query) do
       <<~GQL
-        query GetTasks($status: TaskStatusEnum) {
+        query GetTasks($status: TaskStatus) {
           tasks(status: $status) {
             id
             title
