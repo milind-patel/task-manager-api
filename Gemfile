@@ -38,7 +38,7 @@ gem "image_processing", "~> 1.2"
 gem "graphql", "~> 2.0"
 
 # Authentication
-gem "devise", "~> 4.9"
+gem "devise", "~> 5.0"
 gem "devise-jwt", "~> 0.11"
 
 # CORS
